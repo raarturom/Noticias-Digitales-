@@ -1,0 +1,146 @@
+﻿@using INS364.DigitalNews.ViewModels.News
+@using INS364.DigitalNews.ViewModels.Comment
+@model NewsContentViewModel
+@{
+    ViewData["Title"] = "Visualización de noticias";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    @{
+        if (Model == null)
+        {
+            <h1 class="display-4">Esta noticia no existe.</h1>
+        }
+
+        else
+        {
+            <div>
+                <h1 class="display-4">@Model.NewsTitle</h1>
+                <p>Fecha de publicación: @Model.NewsPublishDate.ToShortDateString()</p>
+                <p>Autor: @Model.NewsAuthor</p>
+                <p class="badge badge-dark">@Model.NewsTag</p>
+                <p>@Model.NewsDescription</p>
+                <br />
+                @{
+                    if (!string.IsNullOrEmpty(Model.NewsFileInfo))
+                    {
+                        if (Model.IsNewsFileVideo)
+                        {
+                            <video width="1280" height="720" controls="" preload="metadata">
+                                <source src="~/@Model.NewsFileInfo">
+                            </video>
+                        }
+
+                        else
+                        {
+                            <img src="~/@Model.NewsFileInfo" alt="News image" />
+                        }
+                    }
+                }
+            </div>
+            <br />
+            <div>
+                <p>@Model.NewsContent</p>
+            </div>
+            <hr />
+            <div id="commentSection">
+                <div class="row">
+                    <div class="col col-9">
+                        <h2>Comentarios</h2>
+                    </div>
+                    <div class="col col-3">
+                        <form method="get" asp-action="Comment" asp-controller="News">
+                            <button class="btn btn-primary" name="newsId" type="submit" value="@Model.NewsId">Publicar comentario</button>
+                        </form>
+                    </div>
+                </div>
+                @{
+                    if (Model.NewsComments.Any())
+                    {
+                        for (int index = 0; index < Model.NewsComments.Count; index++)
+                        {
+                            string current = (index + 1).ToString();
+                            CommentViewModel newsComment = Model.NewsComments[index];
+                            <div class="row border border-info rounded">
+                                <div class="col-1">
+                                    <p>@current</p>
+                                </div>
+                                <div class="col-11">
+                                    <p>Autor del comentario: @newsComment.CommentAuthor</p>
+                                    <p>Fecha de publicación: @newsComment.CommentPublishDate.ToShortDateString()</p>
+                                    <br />
+                                    <p>@newsComment.CommentContent</p>
+                                </div>
+                            </div>
+                            <br />
+                        }
+                    }
+
+                    else
+                    {
+                        <p class="font-weight-bold">No hay comentarios.</p>
+                    }
+                }
+            </div>
+            <hr />
+            <div id="relatedNews">
+                <h2>Noticias relacionadas a esta categoría</h2>
+                @{
+                    if (Model.RelatedNews.Any())
+                    {
+                        <form method="get" asp-action="GetNewsDetails" asp-controller="News">
+                            <div class="container">
+                                @foreach (NewsBriefViewModel newsBrief in Model.RelatedNews)
+                                {
+                                    <div class="row border border-info rounded">
+                                        <div class="col-3">
+                                            @{
+                                                @if (!string.IsNullOrEmpty(newsBrief.NewsFile))
+                                                {
+                                                    @if (newsBrief.HasVideo)
+                                                    {
+                                                        <video class="align-content-center justify-content-center img-thumbnail" width="256" height="256" autoplay playsinline style="pointer-events: none;">
+                                                            <source src="~/@newsBrief.NewsFile">
+                                                        </video>
+                                                    }
+
+                                                    else
+                                                    {
+                                                        <img class="align-content-center justify-content-center img-thumbnail" alt="Thumbnail" src="~/@newsBrief.NewsFile" />
+                                                    }
+                                                }
+
+                                                else
+                                                {
+                                                    <img class="align-content-center justify-content-center img-thumbnail" width="208" height="208" alt="No thumbnail" src="~/img/eye-slash-fill.svg" />
+                                                }
+                                            }
+                                        </div>
+                                        <div class="col-9">
+                                            <h5>@newsBrief.NewsTitle</h5>
+                                            <p class="badge badge-dark">@newsBrief.NewsTag</p>
+                                            <p>@newsBrief.NewsDescription</p>
+                                            <button class="btn btn-info" name="newsId" type="submit" value=@newsBrief.NewsId>Ver</button>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                }
+                            </div>
+                        </form>
+                    }
+
+                    else
+                    {
+                        <p>No hay noticias relacionadas a esta categoría para mostrar.</p>
+                    }
+                }
+            </div>
+        }
+    }
+</body>
+</html>

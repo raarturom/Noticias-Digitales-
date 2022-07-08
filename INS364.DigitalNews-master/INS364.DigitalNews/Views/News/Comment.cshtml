@@ -1,0 +1,34 @@
+﻿@using INS364.DigitalNews.ViewModels.Comment
+@model CommentViewModel
+@{
+    ViewData["Title"] = "Publicación de comentario";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <center>
+        <h1 class="display-4">Publicando comentario en la noticia seleccionada</h1>
+    </center>
+    @{
+        if (ViewBag.CommentPublished == false)
+        {
+            <p class="alert alert-danger">
+                Ha ocurrido un error al publicar el comentario.
+                Verifique su comentario e inténtelo de nuevo más tarde.
+            </p>
+        }
+    }
+    <form id="commentForm" method="post" asp-action="RegisterComment" asp-controller="News">
+        <div class="form-group">
+            <label>Cuerpo del comentario:</label>
+            @Html.TextAreaFor(model => model.CommentContent, htmlAttributes: new { @class = "", maxlength = 512 })
+            @Html.ValidationMessageFor(model => model.CommentContent, string.Empty, htmlAttributes: new { @class = "text-danger" })
+        </div>
+        <button class="btn btn-primary" name="newsId" value="@ViewBag.NewsId">Publicar comentario</button>
+    </form>
+</body>
+</html>

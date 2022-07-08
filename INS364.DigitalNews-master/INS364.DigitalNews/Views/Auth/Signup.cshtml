@@ -1,0 +1,72 @@
+﻿@using INS364.DigitalNews.ViewModels.Auth
+@model SignupViewModel
+@{
+    ViewData["Title"] = "Creación de usuario";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <center>
+        <h1>Creación de nuevo usuario</h1>
+    </center>
+    <br />
+    <form method="get" id="registerForm" asp-controller="Auth" asp-action="RegisterUser">
+        <div class="form-group">
+            <label>Nombre personal:</label>
+            @Html.TextBoxFor(model => model.Firstname, new { maxlength = 32, @class = "" })
+            @Html.ValidationMessageFor(model => model.Firstname, string.Empty, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Apellido personal:</label>
+            @Html.TextBoxFor(model => model.Lastname, new { maxlength = 32, @class = "" })
+            @Html.ValidationMessageFor(model => model.Lastname, string.Empty, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Nombre de usuario:</label>
+            @Html.TextBoxFor(model => model.Username, new { maxlength = 64, @class = "" })
+            @Html.ValidationMessageFor(model => model.Username, string.Empty, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Contraseña a utilizar:</label>
+            @Html.TextBoxFor(model => model.Password, new { maxlength = 64, type = "password", @class = "" })
+            @Html.ValidationMessageFor(model => model.Password, string.Empty, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Correo electrónico:</label>
+            @Html.TextBoxFor(model => model.Email, new { maxlength = 64, @class = "" })
+            @Html.ValidationMessageFor(model => model.Email, string.Empty, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <button class="btn btn-primary" type="submit">Crear nuevo usuario</button>
+        </div>
+        <br />
+        @{
+            switch (ViewBag.Success)
+            {
+                case (true, true):
+                    <p class="alert alert-success">Usuario creado satisfactoriamente.</p>
+                    break;
+
+                case (false, false):
+                    <p class="alert alert-warning">El nombre de usuario ya esta tomado.</p>
+                    break;
+
+                case (true, false):
+                case (false, true):
+                    <p class="alert alert-danger">
+                        Ha ocurrido un error en su solicitud.
+                        Verifique sus datos e intentelo de nuevo más tarde.
+                    </p>
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    </form>
+</body>
+</html>

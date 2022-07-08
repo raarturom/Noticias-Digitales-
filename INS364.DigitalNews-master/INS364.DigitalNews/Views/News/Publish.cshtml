@@ -1,0 +1,71 @@
+﻿@using INS364.DigitalNews.ViewModels.News
+@model NewsPublishViewModel
+@{
+    ViewData["Title"] = "Creación de noticia";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <center>
+        <h1>
+            Creación y publicación de noticia
+        </h1>
+    </center>
+    @{
+        switch (ViewBag.Published)
+        {
+            case true:
+                <p class="alert alert-success">Noticia publicada exitosamente.</p>
+                break;
+
+            case false:
+                <p class="alert alert-danger">
+                    Ha ocurrido un error en la publicación de la noticia.
+                    Verifique sus datos e intentelo de nuevo.
+                </p>
+                break;
+
+            default:
+                break;
+        }
+    }
+    <form method="post" id="publishForm" enctype="multipart/form-data" asp-action="RegisterNews" asp-controller="News">
+        <div class="form-group">
+            <label>Titulo de la noticia:</label>
+            @Html.TextBoxFor(model => model.NewsTitle, htmlAttributes: new { @class = "", maxlength = 96 })
+            @Html.ValidationMessageFor(model => model.NewsTitle, string.Empty, htmlAttributes: new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Descripción de la noticia:</label>
+            @Html.TextAreaFor(model => model.NewsDescription, htmlAttributes: new { @class = "", maxlength = 512 })
+            @Html.ValidationMessageFor(model => model.NewsDescription, string.Empty, htmlAttributes: new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Cuerpo de la noticia:</label>
+            @Html.TextAreaFor(model => model.NewsContent, htmlAttributes: new { @class = "", maxlength = 4000 })
+            @Html.ValidationMessageFor(model => model.NewsContent, string.Empty, htmlAttributes: new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Categoría de la noticia:</label>
+            @Html.DropDownListFor(model => model.NewsTagId, new SelectList(ViewBag.Tags, "Value", "Text"),
+                "Seleccione una categoría", htmlAttributes: new { @class = "" })
+            @Html.ValidationMessageFor(model => model.NewsTagId, "Este campo es requerido.", htmlAttributes: new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Nivel de impacto:</label>
+            @Html.DropDownListFor(model => model.NewsImpactGrade, new SelectList(ViewBag.Impacts, "Value", "Text"),
+                "Seleccione un nivel de impacto", htmlAttributes: new { @class = "" })
+            @Html.ValidationMessageFor(model => model.NewsImpactGrade, "Este campo es requerido.", htmlAttributes: new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <label>Contenido audiovisual (opcional):</label>
+            @Html.TextBoxFor(model => model.NewsFile, htmlAttributes: new { @class = "", type = "file" })
+        </div>
+        <button class="btn btn-primary" type="submit">Registrar noticia</button>
+    </form>
+</body>
+</html>
